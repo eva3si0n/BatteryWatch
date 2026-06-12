@@ -66,10 +66,10 @@ struct ContentView: View {
     }
 
     private var staleness: String {
-        guard !conn.data.isUnknown else { return "нет данных" }
+        guard !conn.data.isUnknown else { return String(localized: "no data") }
         let mins = Int(-conn.data.timestamp.timeIntervalSinceNow / 60)
-        if mins < 1 { return "только что" }
-        if mins < 60 { return "\(mins) мин назад" }
-        return "\(mins / 60) ч назад"
+        if mins < 1 { return String(localized: "just now") }
+        if mins < 60 { return String(localized: "\(mins) min ago") }
+        return String(localized: "\(mins / 60) h ago")
     }
 }

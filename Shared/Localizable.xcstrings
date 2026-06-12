@@ -1,0 +1,71 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Charging" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Заряжается" } }
+      }
+    },
+    "Charged" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Заряжено" } }
+      }
+    },
+    "Not charging" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Не заряжается" } }
+      }
+    },
+    "Unknown" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Неизвестно" } }
+      }
+    },
+    "Updated: %@" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Обновлено: %@" } }
+      }
+    },
+    "never" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "никогда" } }
+      }
+    },
+    "Send to Watch" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Отправить на Watch" } }
+      }
+    },
+    "no data" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "нет данных" } }
+      }
+    },
+    "just now" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "только что" } }
+      }
+    },
+    "%lld min ago" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "%lld мин назад" } }
+      }
+    },
+    "%lld h ago" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "%lld ч назад" } }
+      }
+    },
+    "iPhone Battery" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Батарея iPhone" } }
+      }
+    },
+    "iPhone battery level on your watch face" : {
+      "localizations" : {
+        "ru" : { "stringUnit" : { "state" : "translated", "value" : "Уровень заряда iPhone на циферблате" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

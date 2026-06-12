@@ -41,7 +41,7 @@ struct ContentView: View {
                 Text(stateLabel)
                     .foregroundStyle(.secondary)
 
-                Text("Обновлено: \(formattedTime(monitor.data.timestamp))")
+                Text("Updated: \(formattedTime(monitor.data.timestamp))")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
 
@@ -50,7 +50,7 @@ struct ContentView: View {
                 Button {
                     monitor.refresh()
                 } label: {
-                    Label("Отправить на Watch", systemImage: "applewatch")
+                    Label("Send to Watch", systemImage: "applewatch")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
@@ -63,10 +63,10 @@ struct ContentView: View {
 
     private var stateLabel: String {
         switch monitor.data.state {
-        case 2: return "Заряжается"
-        case 3: return "Заряжено"
-        case 1: return "Не заряжается"
-        default: return "Неизвестно"
+        case 2: return String(localized: "Charging")
+        case 3: return String(localized: "Charged")
+        case 1: return String(localized: "Not charging")
+        default: return String(localized: "Unknown")
         }
     }
 
@@ -77,7 +77,7 @@ struct ContentView: View {
     }
 
     private func formattedTime(_ date: Date) -> String {
-        if date == .distantPast { return "никогда" }
+        if date == .distantPast { return String(localized: "never") }
         let f = DateFormatter()
         f.timeStyle = .short
         f.dateStyle = .none

@@ -162,7 +162,7 @@ struct BatteryWidget: Widget {
             BatteryWidgetView(entry: entry)
         }
         .configurationDisplayName("iPhone Battery")
-        .description("Уровень заряда iPhone на циферблате")
+        .description("iPhone battery level on your watch face")
         .supportedFamilies([
             .accessoryCircular,
             .accessoryRectangular,
