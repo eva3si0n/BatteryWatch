@@ -15,12 +15,24 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     }
 
     func requestUpdate() {
+        // Always pull whatever the iPhone has already queued — works even when
+        // the iPhone app is suspended and unreachable
+        applyReceivedContext()
+
         guard WCSession.default.isReachable else { return }
         WCSession.default.sendMessage(["ping": true], replyHandler: nil, errorHandler: nil)
     }
 
+    private func applyReceivedContext() {
+        let ctx = WCSession.default.receivedApplicationContext
+        guard !ctx.isEmpty else { return }
+        handle(ctx)
+    }
+
     private func handle(_ payload: [String: Any]) {
         guard let fresh = BatteryData.from(dictionary: payload) else { return }
+        // Ignore stale payloads (e.g. a queued context arriving after a newer ping)
+        guard fresh.timestamp >= data.timestamp else { return }
         fresh.save()
         DispatchQueue.main.async { self.data = fresh }
         WidgetCenter.shared.reloadAllTimelines()
@@ -28,7 +40,10 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
 }
 
 extension WatchConnectivityManager: WCSessionDelegate {
-    func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {}
+    func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {
+        guard state == .activated else { return }
+        applyReceivedContext()
+    }
 
     // Called when Watch app is foregrounded and iPhone sends sendMessage
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
