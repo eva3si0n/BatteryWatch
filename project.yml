@@ -11,8 +11,12 @@ settings:
     SWIFT_VERSION: "5.9"
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: T6B3L4X3A9
-    CURRENT_PROJECT_VERSION: 2
-    MARKETING_VERSION: "1.1"
+    # Single source of truth for versions — Info.plists reference these via
+    # $(MARKETING_VERSION)/$(CURRENT_PROJECT_VERSION) so the iPhone app and its
+    # embedded watch app can never drift apart (a mismatch breaks the WCSession
+    # companion link).
+    CURRENT_PROJECT_VERSION: 6
+    MARKETING_VERSION: "1.2.2"
     # Debug-dylib stub breaks widget extensions installed without Xcode attached
     ENABLE_DEBUG_DYLIB: "NO"
 
@@ -27,6 +31,8 @@ targets:
       path: iPhone/Info.plist
       properties:
         CFBundleDisplayName: Battery Watch
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -53,6 +59,8 @@ targets:
       path: Watch/Info.plist
       properties:
         CFBundleDisplayName: Battery Watch
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.eva3si0n.batterywatch
     entitlements:
@@ -77,6 +85,8 @@ targets:
       path: Widget/Info.plist
       properties:
         CFBundleDisplayName: iPhone Battery
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     entitlements:

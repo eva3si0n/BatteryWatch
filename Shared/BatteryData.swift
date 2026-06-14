@@ -6,7 +6,7 @@ struct BatteryData: Codable {
     var state: Int     // UIDevice.BatteryState rawValue: 0=unknown,1=unplugged,2=charging,3=full
     var timestamp: Date
 
-    var percentage: Int { Int(max(0, level) * 100) }
+    var percentage: Int { Int((max(0, level) * 100).rounded()) }
     var isCharging: Bool { state == 2 || state == 3 }
     var isUnknown: Bool { level < 0 }
 
