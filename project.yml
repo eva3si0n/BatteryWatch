@@ -15,8 +15,8 @@ settings:
     # $(MARKETING_VERSION)/$(CURRENT_PROJECT_VERSION) so the iPhone app and its
     # embedded watch app can never drift apart (a mismatch breaks the WCSession
     # companion link).
-    CURRENT_PROJECT_VERSION: 6
-    MARKETING_VERSION: "1.2.2"
+    CURRENT_PROJECT_VERSION: 8
+    MARKETING_VERSION: "1.2.3"
     # Debug-dylib stub breaks widget extensions installed without Xcode attached
     ENABLE_DEBUG_DYLIB: "NO"
 

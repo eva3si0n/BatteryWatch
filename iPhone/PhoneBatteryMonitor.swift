@@ -67,25 +67,18 @@ final class PhoneBatteryMonitor: NSObject, ObservableObject {
     private func sendToWatch(_ data: BatteryData) {
         guard let s = session, s.activationState == .activated else { return }
 
-        // Always queue latest state: delivered whenever the watch app next wakes,
-        // no budget, overwrites previous value
+        // Latest-state snapshot (coalesced, best-effort)
         try? s.updateApplicationContext(data.asDictionary)
 
+        // Guaranteed FIFO delivery — survives suspension/relaunch, no reachability needed
+        s.transferUserInfo(data.asDictionary)
+
+        // Instant path when the watch app is foregrounded
         if s.isReachable {
-            // Watch app is foregrounded — instant, no budget limit
-            s.sendMessage(data.asDictionary, replyHandler: nil, errorHandler: { [weak self] _ in
-                self?.tryComplicationTransfer(data, session: s)
-            })
-        } else {
-            tryComplicationTransfer(data, session: s)
+            s.sendMessage(data.asDictionary, replyHandler: nil, errorHandler: { _ in })
         }
     }
 
-    private func tryComplicationTransfer(_ data: BatteryData, session s: WCSession) {
-        guard s.isComplicationEnabled else { return }
-        // Budget: ~50/day. Don't call more often than needed.
-        s.transferCurrentComplicationUserInfo(data.asDictionary)
-    }
 }
 
 extension PhoneBatteryMonitor: WCSessionDelegate {
