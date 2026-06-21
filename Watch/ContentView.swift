@@ -43,9 +43,10 @@ struct ContentView: View {
                 .foregroundStyle(.secondary)
 
             Text(staleness)
-                .font(.system(size: 9))
-                .foregroundStyle(.tertiary)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white)
                 .lineLimit(1)
+                .minimumScaleFactor(0.7)
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { conn.requestUpdate() }

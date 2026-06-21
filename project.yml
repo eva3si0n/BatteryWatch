@@ -15,8 +15,8 @@ settings:
     # $(MARKETING_VERSION)/$(CURRENT_PROJECT_VERSION) so the iPhone app and its
     # embedded watch app can never drift apart (a mismatch breaks the WCSession
     # companion link).
-    CURRENT_PROJECT_VERSION: 8
-    MARKETING_VERSION: "1.2.3"
+    CURRENT_PROJECT_VERSION: 9
+    MARKETING_VERSION: "1.3.0"
     # Debug-dylib stub breaks widget extensions installed without Xcode attached
     ENABLE_DEBUG_DYLIB: "NO"
 
@@ -33,6 +33,10 @@ targets:
         CFBundleDisplayName: Battery Watch
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UIBackgroundModes:
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.eva3si0n.batterywatch.refresh
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -97,3 +101,24 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.eva3si0n.batterywatch.watchkitapp.widget
+
+schemes:
+  # Run this scheme to install on the iPhone — it carries the embedded watch
+  # app and registers it as the WatchConnectivity companion (required for
+  # delivery to the watch; a standalone watch install does NOT register it).
+  BatteryWatch:
+    build:
+      targets:
+        BatteryWatch: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+  BatteryWatchWatch:
+    build:
+      targets:
+        BatteryWatchWatch: all
+    run:
+      config: Debug
+    archive:
+      config: Release

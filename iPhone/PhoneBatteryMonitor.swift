@@ -1,5 +1,6 @@
 import UIKit
 import WatchConnectivity
+import UserNotifications
 import Combine
 
 final class PhoneBatteryMonitor: NSObject, ObservableObject {
@@ -9,9 +10,14 @@ final class PhoneBatteryMonitor: NSObject, ObservableObject {
 
     private var session: WCSession?
 
+    // Charge target (user has an 80% hardware charge limit) and low-battery warning
+    private let highThreshold = 80
+    private let lowThreshold = 20
+
     override private init() {
         super.init()
         UIDevice.current.isBatteryMonitoringEnabled = true
+        requestNotificationAuthorization()
         setupWatchConnectivity()
         refresh()
         subscribeToSystemNotifications()
@@ -23,6 +29,7 @@ final class PhoneBatteryMonitor: NSObject, ObservableObject {
         let fresh = currentData()
         fresh.save()
         data = fresh
+        checkThresholds(fresh)
         sendToWatch(fresh)
     }
 
@@ -53,6 +60,54 @@ final class PhoneBatteryMonitor: NSObject, ObservableObject {
     }
 
     @objc private func systemEvent() { refresh() }
+
+    // MARK: - Notifications
+
+    private let highNotifiedKey = "com.batterywatch.notifiedHigh"
+    private let lowNotifiedKey = "com.batterywatch.notifiedLow"
+
+    private var defaults: UserDefaults? { UserDefaults(suiteName: BatteryData.appGroupID) }
+
+    private func requestNotificationAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
+
+    private func checkThresholds(_ data: BatteryData) {
+        guard !data.isUnknown, let defaults else { return }
+        let pct = data.percentage
+        let onPower = data.isCharging // charging or full
+
+        // Reached charge target while on power — fire once per charging session
+        if pct >= highThreshold, onPower {
+            if !defaults.bool(forKey: highNotifiedKey) {
+                defaults.set(true, forKey: highNotifiedKey)
+                notify(title: "iPhone заряжён до \(highThreshold)%",
+                       body: "Зарядка достигла лимита — можно отключать.")
+            }
+        } else if pct < highThreshold - 5 || !onPower {
+            defaults.set(false, forKey: highNotifiedKey) // reset (hysteresis)
+        }
+
+        // Low battery while discharging — fire once per discharge
+        if pct <= lowThreshold, !onPower {
+            if !defaults.bool(forKey: lowNotifiedKey) {
+                defaults.set(true, forKey: lowNotifiedKey)
+                notify(title: "Низкий заряд iPhone — \(pct)%",
+                       body: "Пора поставить на зарядку.")
+            }
+        } else if pct >= lowThreshold + 5 || onPower {
+            defaults.set(false, forKey: lowNotifiedKey)
+        }
+    }
+
+    private func notify(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        let req = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(req)
+    }
 
     // MARK: - WatchConnectivity
 
